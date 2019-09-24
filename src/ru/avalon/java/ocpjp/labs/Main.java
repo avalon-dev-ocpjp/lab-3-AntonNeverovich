@@ -1,7 +1,12 @@
 package ru.avalon.java.ocpjp.labs;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Connection;
+import java.sql.DataTruncation;
+import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
 
@@ -33,6 +38,11 @@ public class Main {
             code.setCode("MV");
             code.save(connection);
             printAllCodes(connection);
+            // testing
+            ArrayList<ProductCode> a = (ArrayList<ProductCode>) ProductCode.all(connection);
+            a.get(0).setDescription("TEST");
+            a.get(0).save(connection);
+            printAllCodes(connection);
         }
         /*
          * TODO #14 Средствами отладчика проверьте корректность работы программы
@@ -59,7 +69,8 @@ public class Main {
         /*
          * TODO #02 Реализуйте метод getUrl
          */
-        throw new UnsupportedOperationException("Not implemented yet!");
+        final String URL = "jdbc:mariadb://185.11.246.52:3306/lab_3_antonneverovich";
+        return URL;
     }
     /**
      * Возвращает параметры соединения
@@ -71,7 +82,17 @@ public class Main {
         /*
          * TODO #03 Реализуйте метод getProperties
          */
-        throw new UnsupportedOperationException("Not implemented yet!");
+        final String PATH_TO_PROPERTIES = "src/ru/avalon/java/ocpjp/labs/resources/config.properties";
+        Properties properties = new Properties();
+        try {
+            FileInputStream fileInputStream = new FileInputStream(PATH_TO_PROPERTIES);
+            properties.load(fileInputStream);
+            fileInputStream.close();
+        } catch (IOException e) {
+            System.out.println("Property not found!..");
+            e.printStackTrace();
+        }
+        return properties;
     }
     /**
      * Возвращает соединение с базой данных Sample
@@ -83,7 +104,10 @@ public class Main {
         /*
          * TODO #04 Реализуйте метод getConnection
          */
-        throw new UnsupportedOperationException("Not implemented yet!");
+        Connection connection = DriverManager.getConnection(getUrl(), getProperties());
+        System.out.println("Connection successful!...");
+
+        return connection;
     }
     
 }
